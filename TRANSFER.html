@@ -31,21 +31,20 @@
       const nominal = parseInt(document.getElementById('nominal').value);
       const order_id = `${idSantri}_${nama}_${wa}`.replace(/\s+/g, '');
 
-      // Kirim ke Apps Script kamu untuk buat Snap token sandbox
-const url = `https://script.google.com/macros/s/AKfycbytuFjLYwyqsYJkG_Nfbr-XzyC4RtQbgPLdiGOy7N5N1PmyESsAw71FiUthO2u1566y/exec?order_id=${order_id}&nominal=${nominal}&nama=${nama}&wa=${wa}`;
-const res = await fetch(url);
-const result = await res.json();
-snap.pay(result.token);
-
-      const result = await res.json();
-      if (result.token) {
-        snap.pay(result.token); // Munculkan Snap UI
-      } else {
-        alert("Gagal mendapatkan token Snap.");
+      const url = `https://script.google.com/macros/s/AKfycbytuFjLYwyqsYJkG_Nfbr-XzyC4RtQbgPLdiGOy7N5N1PmyESsAw71FiUthO2u1566y/exec?order_id=${order_id}&nominal=${nominal}&nama=${encodeURIComponent(nama)}&wa=${wa}`;
+      try {
+        const res = await fetch(url);
+        const result = await res.json();
+        if (result.token) {
+          snap.pay(result.token); // Munculkan Snap UI
+        } else {
+          alert("Gagal mendapatkan token Snap.");
+        }
+      } catch (err) {
+        alert("Gagal terhubung ke server. Cek koneksi atau URL Apps Script.");
+        console.error(err);
       }
     });
   </script>
 </body>
-
 </html>
-
