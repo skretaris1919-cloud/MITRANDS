@@ -32,10 +32,10 @@
       const order_id = `${idSantri}_${nama}_${wa}`.replace(/\s+/g, '');
 
       // Kirim ke Apps Script kamu untuk buat Snap token sandbox
-      const res = await fetch("https://script.google.com/macros/s/AKfycbzV9OQzYBn1EfRPKjPbBBp6Pkh3_zxSXxRWWxmP34me1SA6An5iBPYJuKsyW7SUOg/exec", {
-        method: "POST",
-        body: JSON.stringify({ order_id, nominal, nama, wa })
-      });
+const url = `https://script.google.com/macros/s/AKfycbwbpU6S5BPeSDtM34g1rJRzMpATtB_-MlsxsuOntGDYesNkMqKTa-q_zVomff2E1L8e/exec?order_id=${order_id}&nominal=${nominal}&nama=${nama}&wa=${wa}`;
+const res = await fetch(url);
+const result = await res.json();
+snap.pay(result.token);
 
       const result = await res.json();
       if (result.token) {
@@ -46,4 +46,5 @@
     });
   </script>
 </body>
+
 </html>
