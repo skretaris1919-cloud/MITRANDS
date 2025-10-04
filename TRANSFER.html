@@ -2,9 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Form Tes Pembayaran Santri</title>
-  <!-- Client Key Sandbox dari Midtrans -->
-  <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="Mid-client-l2QYZNGl7qkb35nc"></script>
+  <title>Form Tes Pembayaran Santri - TryPay</title>
   <style>
     body { font-family: sans-serif; padding: 20px; max-width: 400px; margin: auto; }
     input, button { width: 100%; padding: 10px; margin: 8px 0; font-size: 16px; }
@@ -29,20 +27,19 @@
       const wa = document.getElementById('wa').value.trim();
       const idSantri = document.getElementById('idSantri').value.trim();
       const nominal = parseInt(document.getElementById('nominal').value);
-      const order_id = `${idSantri}_${nama}_${wa}`.replace(/\s+/g, '');
+      const reference_id = `${idSantri}_${nama}_${wa}`.replace(/\s+/g, '');
 
-      const url = `https://script.google.com/macros/s/AKfycbytuFjLYwyqsYJkG_Nfbr-XzyC4RtQbgPLdiGOy7N5N1PmyESsAw71FiUthO2u1566y/exec?order_id=${order_id}&nominal=${nominal}&nama=${encodeURIComponent(nama)}&wa=${wa}`;
-      try {
-        const res = await fetch(url);
-        const result = await res.json();
-        if (result.token) {
-          snap.pay(result.token); // Munculkan Snap UI
-        } else {
-          alert("Gagal mendapatkan token Snap.");
-        }
-      } catch (err) {
-        alert("Gagal terhubung ke server. Cek koneksi atau URL Apps Script.");
-        console.error(err);
+      // Kirim ke Apps Script kamu untuk buat transaksi TryPay
+      const res = await fetch("https://script.google.com/macros/s/AKfycbyLhTWNpbHGyhFd88kmuJIEFs2TL0c2HdvyIjBODABl4TGZziEGRK_WIo4To6sn7Jku/exec", {
+        method: "POST",
+        body: JSON.stringify({ reference_id, nominal, nama, wa })
+      });
+
+      const result = await res.json();
+      if (result.success && result.payment_url) {
+        window.open(result.payment_url, "_blank"); // Buka halaman pembayaran TryPay
+      } else {
+        alert("Gagal membuat transaksi TryPay.");
       }
     });
   </script>
